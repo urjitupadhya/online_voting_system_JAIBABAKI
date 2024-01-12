@@ -1,0 +1,26 @@
+name: online_voting_system
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'  # Adjusted Dart SDK version
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^2.0.9
+  firebase_auth: ^4.15.3
+  flutter_ui_toolkit: ^0.0.3+9
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  assets:
+    - assets/ first.jpg
+    - assets/svgs/emblem.svg
+  uses-material-design: true  # Adjusted indentation
