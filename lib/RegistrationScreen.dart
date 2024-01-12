@@ -1,8 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'OtpInputScreen.dart';
-import 'login.dart';
 
-class RegistrationScreen extends StatelessWidget {
+class RegistrationScreen extends StatefulWidget {
+  @override
+  _RegistrationScreenState createState() => _RegistrationScreenState();
+}
+
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _mobileController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _verifyPhoneNumber(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: '+91' + _mobileController.text.trim(),
+        verificationCompleted: (PhoneAuthCredential credential) {
+          print('Auto-retrieval completed: ${credential.smsCode}');
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print('Verification failed: ${e.message}');
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpInputScreen(verificationId: verificationId),
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print('Auto-retrieval timeout: $verificationId');
+        },
+      );
+    } catch (e) {
+      print('Error sending verification code: $e');
+      // Display an error message to the user
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,61 +71,37 @@ class RegistrationScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Full Name",
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
                     labelText: "Mobile Number",
                     border: OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Aadhaar Number",
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Voter Id Number",
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
+                  keyboardType: TextInputType.phone,
+                  controller: _mobileController,
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => OtpInputScreen()),
-                    );
-                  },
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          await _verifyPhoneNumber(context);
+                        },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue,
                     onPrimary: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: Text("Register"),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      : Text("Get OTP"),
                 ),
                 SizedBox(height: 15),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
+                    // Navigate to the Login screen
+                    Navigator.pushNamed(context, '/login');
                   },
                   child: Text("Already Registered? Login"),
                 ),
