@@ -18,12 +18,27 @@ class OtpInputScreen extends StatelessWidget {
 
       UserCredential userCredential = await _auth.signInWithCredential(credential);
 
-      // After successful OTP verification, you can proceed with registration logic
-      print('User ID: ${userCredential.user?.uid}');
+      // After successful OTP verification, navigate to the new home screen
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NewHomeScreen()),
+        );
+      }
     } catch (e) {
       print('Error verifying OTP: $e');
       // Handle verification failure
+      _showErrorSnackbar(context, 'The verification code is invalid. Please check and try again.');
     }
+  }
+
+  void _showErrorSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -65,6 +80,20 @@ class OtpInputScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class NewHomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('New Home Screen'),
+      ),
+      body: Center(
+        child: Text('Welcome to the New Home Screen!'),
       ),
     );
   }

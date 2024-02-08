@@ -10,6 +10,9 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _securityPinController = TextEditingController();
+  final TextEditingController _aadharController = TextEditingController();
   bool _isLoading = false;
 
   Future<void> _verifyPhoneNumber(BuildContext context) async {
@@ -71,6 +74,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
+                    labelText: "Username",
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.text,
+                  controller: _usernameController,
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
                     labelText: "Mobile Number",
                     border: OutlineInputBorder(),
                     filled: true,
@@ -78,6 +92,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   keyboardType: TextInputType.phone,
                   controller: _mobileController,
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "Security Pin",
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: _securityPinController,
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "Aadhar Number",
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: _aadharController,
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
