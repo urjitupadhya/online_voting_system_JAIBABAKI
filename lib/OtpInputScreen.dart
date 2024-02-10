@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:online_voting_system/HomeScreen.dart';
 class OtpInputScreen extends StatelessWidget {
   final String verificationId;
 
@@ -20,10 +21,13 @@ class OtpInputScreen extends StatelessWidget {
 
       // After successful OTP verification, navigate to the new home screen
       if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => NewHomeScreen()),
-        );
+  Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (context) => HomeScreen(), // Instantiate HomeScreen
+  ),
+);
+
       }
     } catch (e) {
       print('Error verifying OTP: $e');
@@ -85,16 +89,3 @@ class OtpInputScreen extends StatelessWidget {
   }
 }
 
-class NewHomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('New Home Screen'),
-      ),
-      body: Center(
-        child: Text('Welcome to the New Home Screen!'),
-      ),
-    );
-  }
-}

@@ -1,161 +1,212 @@
+// onboarding_screen.dart
+
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:online_voting_system/RegistrationScreen.dart';
-import 'package:online_voting_system/Login.dart';
+import 'package:online_voting_system/constants.dart';
+import 'package:online_voting_system/custom_online.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
-  late PageController _pageController;
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 6,
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                PageView.builder(
-                  controller: _pageController,
-                  itemCount: 3, // Number of onboarding pages
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPage = page;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return AnimatedBuilder(
-                      animation: _pageController,
-                      builder: (context, child) {
-                        double value = 1.0;
-                        if (_pageController.position.haveDimensions) {
-                          value = _pageController.page! - index;
-                          value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
-                        }
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 0),
-                              child: Transform.scale(
-                                scale: value,
-                                child: Image.asset(
-                                  'assets/indian.jpg',
-                                  height: 300,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 10,
-                              child: Text(
-                                'All Vote matters your too!', // Replace with your text
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+    return Scaffold(
+      backgroundColor: Constants.kWhiteColor,  // White background representing the central color of the Indian flag
+      extendBody: true,
+      body: SizedBox(
+        width: screenWidth,
+        height: screenHeight,
+        child: Stack(
+          children: [
+            Positioned(
+              top: screenHeight * 0.1,
+              left: -88,
+              child: Container(
+                height: 166,
+                width: 166,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(255, 255, 150, 3),  // Saffron color representing the top color of the Indian flag
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 200,
+                    sigmaY: 200,
+                  ),
+                  child: Container(
+                    height: 166,
+                    width: 166,
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: screenHeight * 0.3,
+              right: -100,
+              child: Container(
+                height: 200,
+                width: 200,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Constants.kGreenColor,  // Green color representing the bottom color of the Indian flag
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 200,
+                    sigmaY: 200,
+                  ),
+                  child: Container(
+                    height: 200,
+                    width: 200,
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: screenHeight * 0.07,
+                  ),
+                  CustomOutline(
+                    strokeWidth: 4,
+                    radius: screenWidth * 0.8,
+                    padding: const EdgeInsets.all(4),
+                    width: screenWidth * 0.8,
+                    height: screenWidth * 0.8,
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color.fromARGB(255, 234, 113, 7),  // Saffron color representing the top color of the Indian flag
+                          Constants.kWhiteColor.withOpacity(0),
+                          Constants.kGreenColor.withOpacity(0.1),
+                          Constants.kGreenColor,
+                        ],
+                        stops: const [
+                          0.2,
+                          0.4,
+                          0.6,
+                          1
+                        ]),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          alignment: Alignment.bottomLeft,
+                          image: AssetImage('assets/indian.jpg'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.09,
+                  ),
+                  Text(
+                    'Participate in\nOnline Voting',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 67, 51, 51).withOpacity(0.85),
+                      fontSize: screenHeight <= 667 ? 18 : 34,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.05,
+                  ),
+                  Text(
+                    'Exercise your right to vote\nanytime, anywhere',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 28, 7, 7).withOpacity(0.75),
+                      fontSize: screenHeight <= 667 ? 12 : 16,
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.03,
+                  ),
+                  CustomOutline(
+                    strokeWidth: 3,
+                    radius: 20,
+                    padding: const EdgeInsets.all(3),
+                    width: 160,
+                    height: 38,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Constants.kPinkColor,
+                        Constants.kGreenColor,
+                      ],
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegistrationScreen()),
                         );
                       },
-                    );
-                  },
-                ),
-                Positioned(
-                  bottom: 90,
-                  child: Row(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Constants.kPinkColor.withOpacity(0.5),
+                              Constants.kGreenColor.withOpacity(0.5),
+                            ],
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Get Started',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Constants.kWhiteColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       3,
-                      (index) => buildDot(index),
+                      (index) {
+                        return Container(
+                          height: 7,
+                          width: 7,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: index == 0
+                                ? Color.fromARGB(255, 0, 237, 150)
+                                : Color.fromARGB(255, 255, 72, 0).withOpacity(0.2),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 150), // Add some space between dots and text
-          Expanded(
-            child: Container(
-              height: 450, // Increase the height of the orange background
-              color: Colors.orange,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Navigate to Sign In screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Login()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      onPrimary: Colors.black,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    ),
-                    child: Text("Sign In"),
-                  ),
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Navigate to Sign Up screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RegistrationScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.orange,
-                      onPrimary: Colors.white,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    ),
-                    child: Text("Sign Up"),
-                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  )
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDot(int index) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      height: 10,
-      width: _currentPage == index ? 30 : 10,
-      decoration: BoxDecoration(
-        color: _currentPage == index
-            ? Colors.orange
-            : Color.fromARGB(255, 248, 225, 191),
-        borderRadius: BorderRadius.circular(5),
+          ],
+        ),
       ),
     );
   }

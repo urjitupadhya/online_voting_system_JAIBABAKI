@@ -68,7 +68,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue[800],
+                    color: Color.fromARGB(255, 199, 145, 80),
                   ),
                 ),
                 SizedBox(height: 20),

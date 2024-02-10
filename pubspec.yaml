@@ -15,8 +15,9 @@ dependencies:
   firebase_core: ^2.25.3
   firebase_auth: ^4.17.3
   local_auth: ^2.1.8
-
-
+  font_awesome_flutter: ^10.7.0
+  image_picker: ^1.0.7
+  get_it: ^7.6.7
 
 
 
@@ -38,4 +39,5 @@ flutter:
     - assets/indian.jpg 
     - assets/ first.jpg
     - assets/svgs/emblem.svg
+    - assets/indianf.jpg
   uses-material-design: true  # Adjusted indentation
