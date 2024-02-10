@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:online_voting_system/HomeScreen.dart'; // Import the HomeScreen if it's in a different file
 
 class Login extends StatelessWidget {
   @override
@@ -51,23 +52,53 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 40),
-                // Button
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle login logic here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    onPrimary: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: Text(
-                    "LOGIN",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                // Button Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Skip Button
+                    ElevatedButton(
+                      onPressed: () {
+                        // Navigate to HomeScreen when Skip is pressed
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.grey,
+                        onPrimary: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: Text(
+                        "SKIP",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    // Login Button
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle login logic here
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        onPrimary: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: Text(
+                        "LOGIN",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
