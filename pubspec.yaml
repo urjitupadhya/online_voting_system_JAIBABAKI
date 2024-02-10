@@ -18,6 +18,8 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   image_picker: ^1.0.7
   get_it: ^7.6.7
+  glassmorphism: ^3.0.0
+  glassmorphism_ui: ^0.3.0
 
 
 
