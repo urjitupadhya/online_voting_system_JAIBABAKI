@@ -44,38 +44,39 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDftZoG1e1PNLwey8Fv6SQhVmopEM-cmbo',
-    appId: '1:56701802004:web:43ede6efeda6bacaa0f901',
-    messagingSenderId: '56701802004',
-    projectId: 'onlinevotingsystem-ee812',
-    authDomain: 'onlinevotingsystem-ee812.firebaseapp.com',
-    storageBucket: 'onlinevotingsystem-ee812.appspot.com',
-    measurementId: 'G-S3QX3YVRHQ',
+    apiKey: 'AIzaSyAOW49MAa1b3iaH8EqEVLH8X6R1Tulz1xU',
+    appId: '1:771612945089:web:f67c703fb30ea098b4c240',
+    messagingSenderId: '771612945089',
+    projectId: 'onlineurjitsystem',
+    authDomain: 'onlineurjitsystem.firebaseapp.com',
+    storageBucket: 'onlineurjitsystem.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBSxwabzcbW8nwXTKXWKzsc4juiaIeoHUM',
-    appId: '1:56701802004:android:547cb871dcd5a724a0f901',
-    messagingSenderId: '56701802004',
-    projectId: 'onlinevotingsystem-ee812',
-    storageBucket: 'onlinevotingsystem-ee812.appspot.com',
+    apiKey: 'AIzaSyC4EEy6jYgeRnps9tMBXSInv7sHbtxklXg',
+    appId: '1:771612945089:android:fe210b559517fa6bb4c240',
+    messagingSenderId: '771612945089',
+    projectId: 'onlineurjitsystem',
+    storageBucket: 'onlineurjitsystem.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAfNsz0wLvpaGInuAt2vC-zNbUcrYwxeZA',
-    appId: '1:56701802004:ios:10c014d81aeac9daa0f901',
-    messagingSenderId: '56701802004',
-    projectId: 'onlinevotingsystem-ee812',
-    storageBucket: 'onlinevotingsystem-ee812.appspot.com',
+    apiKey: 'AIzaSyCjgWuO6GhFJ_3Fl1k4ESvHffvs0BEaT7E',
+    appId: '1:771612945089:ios:7e24ca01d2e310b5b4c240',
+    messagingSenderId: '771612945089',
+    projectId: 'onlineurjitsystem',
+    storageBucket: 'onlineurjitsystem.appspot.com',
+    iosClientId: '771612945089-jdmvqqe843ied3q4vp5o8ujfeefppgsg.apps.googleusercontent.com',
     iosBundleId: 'com.example.onlineVotingSystem',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAfNsz0wLvpaGInuAt2vC-zNbUcrYwxeZA',
-    appId: '1:56701802004:ios:d1acd38fb1473a3fa0f901',
-    messagingSenderId: '56701802004',
-    projectId: 'onlinevotingsystem-ee812',
-    storageBucket: 'onlinevotingsystem-ee812.appspot.com',
+    apiKey: 'AIzaSyCjgWuO6GhFJ_3Fl1k4ESvHffvs0BEaT7E',
+    appId: '1:771612945089:ios:32d21d9f150624f8b4c240',
+    messagingSenderId: '771612945089',
+    projectId: 'onlineurjitsystem',
+    storageBucket: 'onlineurjitsystem.appspot.com',
+    iosClientId: '771612945089-mb0nujso0oi29od8jn4lvuvujgk8fcba.apps.googleusercontent.com',
     iosBundleId: 'com.example.onlineVotingSystem.RunnerTests',
   );
 }

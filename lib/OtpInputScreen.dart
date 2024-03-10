@@ -76,8 +76,8 @@ class OtpInputScreen extends StatelessWidget {
                 await _verifyOtp(context);
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+              //  primary: Colors.blue,
+            //  onPrimary: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 15),
               ),
               child: Text("Verify OTP"),

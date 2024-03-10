@@ -1,26 +1,43 @@
 {
   "project_info": {
-    "project_number": "56701802004",
-    "project_id": "onlinevotingsystem-ee812",
-    "storage_bucket": "onlinevotingsystem-ee812.appspot.com"
+    "project_number": "771612945089",
+    "project_id": "onlineurjitsystem",
+    "storage_bucket": "onlineurjitsystem.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:56701802004:android:547cb871dcd5a724a0f901",
+        "mobilesdk_app_id": "1:771612945089:android:fe210b559517fa6bb4c240",
         "android_client_info": {
           "package_name": "com.example.online_voting_system"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "771612945089-t8d2om7ujefi82poqhmeshcn084s54o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBSxwabzcbW8nwXTKXWKzsc4juiaIeoHUM"
+          "current_key": "AIzaSyC4EEy6jYgeRnps9tMBXSInv7sHbtxklXg"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "771612945089-t8d2om7ujefi82poqhmeshcn084s54o7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "771612945089-jdmvqqe843ied3q4vp5o8ujfeefppgsg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.onlineVotingSystem"
+              }
+            }
+          ]
         }
       }
     }

@@ -1,7 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:online_voting_system/HomeScreen.dart'; // Import the HomeScreen if it's in a different file
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:online_voting_system/HomeScreen.dart';
+import 'package:online_voting_system/Home.dart';
 
 class Login extends StatelessWidget {
+  final TextEditingController _voterIdController = TextEditingController();
+  final TextEditingController _securityNumberController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _loginWithEmailAndPassword(BuildContext context) async {
+    try {
+      // Sign in with email and password
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _voterIdController.text.trim(), // Use email as voter ID
+        password: _securityNumberController.text,
+      );
+
+      // If login is successful, navigate to the HomeScreen
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error logging in: $e');
+      // Handle login failure (show error message, etc.)
+    }
+  }
+
+  Future<void> _sendPasswordResetEmail(BuildContext context) async {
+    try {
+      // Send password reset email
+      await _auth.sendPasswordResetEmail(email: _voterIdController.text.trim());
+      
+      // Inform the user that the email has been sent
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password reset email sent. Check your inbox.'),
+        ),
+      );
+    } catch (e) {
+      print('Error sending password reset email: $e');
+      // Handle error (show error message, etc.)
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,10 +60,9 @@ class Login extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Header Section
                 SizedBox(height: 20),
                 Text(
-                  "Voter ID (last four digits)",
+                  "Voter ID (Email)",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -25,8 +71,10 @@ class Login extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _voterIdController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    hintText: "XXXX",
+                    hintText: "Enter your email",
                     border: OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
@@ -43,33 +91,30 @@ class Login extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _securityNumberController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    hintText: "********",
+                    hintText: "Enter your password",
                     border: OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
                   ),
                 ),
-                SizedBox(height: 40),
-                // Button Row
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Skip Button
                     ElevatedButton(
                       onPressed: () {
-                        // Navigate to HomeScreen when Skip is pressed
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
+                            builder: (context) => Home(),
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.grey,
-                        onPrimary: Colors.white,
+                     
                         padding: EdgeInsets.symmetric(vertical: 15),
                       ),
                       child: Text(
@@ -80,14 +125,12 @@ class Login extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Login Button
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle login logic here
+                      onPressed: () async {
+                        await _loginWithEmailAndPassword(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        onPrimary: Colors.white,
+                    
                         padding: EdgeInsets.symmetric(vertical: 15),
                       ),
                       child: Text(
@@ -99,6 +142,18 @@ class Login extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(height: 10), // Add some spacing
+                TextButton(
+                  onPressed: () async {
+                    await _sendPasswordResetEmail(context);
+                  },
+                  child: Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
                 ),
               ],
             ),
