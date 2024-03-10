@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:online_voting_system/constants.dart';
+import 'package:online_voting_system/constant.dart';
 
 class SearchFieldWidget extends StatelessWidget {
   const SearchFieldWidget({Key? key, required this.padding}) : super(key: key);

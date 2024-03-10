@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http:
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.9
   flutter_ui_toolkit: ^0.0.3+9
@@ -21,6 +22,9 @@ dependencies:
   glassmorphism: ^3.0.0
   glassmorphism_ui: ^0.3.0
   web3dart: ^2.7.2
+  cloud_firestore: ^4.15.5
+  web_socket_channel: ^2.4.0
+  webview_flutter: ^4.5.0
 
 
 
@@ -39,8 +43,10 @@ dev_dependencies:
 
 flutter:
   assets:
+    - web/
     - assets/indian.jpg 
     - assets/ first.jpg
     - assets/svgs/emblem.svg
     - assets/indianf.jpg
+    - assets/abi.json
   uses-material-design: true  # Adjusted indentation

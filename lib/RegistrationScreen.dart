@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'OtpInputScreen.dart';
+import 'package:online_voting_system/OtpInputScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -9,46 +9,120 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _securityPinController = TextEditingController();
-  final TextEditingController _aadharController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _verifyPhoneNumber(BuildContext context) async {
+  Future<void> _register(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: '+91' + _mobileController.text.trim(),
-        verificationCompleted: (PhoneAuthCredential credential) {
-          print('Auto-retrieval completed: ${credential.smsCode}');
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print('Verification failed: ${e.message}');
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OtpInputScreen(verificationId: verificationId),
+      // Create a new user with email and password
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
+      // Perform phone number verification
+      await _verifyPhoneNumber();
+
+      // Display a dialog prompting the user to check their email and enter OTP
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Registration Successful'),
+            content: Column(
+              children: [
+                Text('A verification email has been sent to ${userCredential.user!.email}.'),
+                SizedBox(height: 10),
+                Text('Please check your email and enter the OTP sent to your phone number.'),
+              ],
             ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Navigate to the OTP input screen
+        Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => OtpInputScreen(verificationId: 'your_verification_id'),
+  ),
+);
+
+                },
+                child: Text('OK'),
+              ),
+            ],
           );
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print('Auto-retrieval timeout: $verificationId');
         },
       );
     } catch (e) {
-      print('Error sending verification code: $e');
+      print('Error registering user: $e');
       // Display an error message to the user
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Registration Error'),
+            content: Text('Failed to register. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _verifyPhoneNumber() async {
+    String phoneNumber = _phoneController.text.trim();
+
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Auto-retrieval of the SMS code
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print('Phone verification failed: $e');
+        // Handle verification failed
+      },
+  
+      codeSent: (String verificationId, int? resendToken) {
+        // Store verificationId somewhere, we will use it later
+        print('Code sent to $phoneNumber');
+        // Navigate to the OTP input screen with the actual verification ID
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpInputScreen(verificationId: verificationId),
+          ),
+        );
+      },
+
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // Auto-retrieval timeout
+        print('Code auto retrieval timeout');
+      },
+      timeout: Duration(seconds: 60), // Timeout duration
+    );
   }
 
   @override
@@ -68,71 +142,60 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 199, 145, 80),
+                    color: Color.fromARGB(255, 254, 254, 254),
                   ),
                 ),
                 SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Username",
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailController,
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "Password",
                     border: OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
                   ),
                   keyboardType: TextInputType.text,
-                  controller: _usernameController,
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Mobile Number",
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  keyboardType: TextInputType.phone,
-                  controller: _mobileController,
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Security Pin",
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  keyboardType: TextInputType.number,
-                  controller: _securityPinController,
+                  controller: _passwordController,
                   obscureText: true,
                 ),
                 SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Aadhar Number",
+                    labelText: "Phone Number",
                     border: OutlineInputBorder(),
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  keyboardType: TextInputType.number,
-                  controller: _aadharController,
+                  keyboardType: TextInputType.phone,
+                  controller: _phoneController,
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _isLoading
                       ? null
                       : () async {
-                          await _verifyPhoneNumber(context);
+                          await _register(context);
                         },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    onPrimary: Colors.white,
+                    // primary: Colors.blue,
+                    // onPrimary: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: _isLoading
                       ? CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         )
-                      : Text("Get OTP"),
+                      : Text("Register"),
                 ),
                 SizedBox(height: 15),
                 TextButton(
