@@ -1,8 +1,6 @@
-// onboarding_screen.dart
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:online_voting_system/RegistrationScreen.dart';
+import 'package:online_voting_system/Selection.dart'; // Import the Selection screen
 import 'package:online_voting_system/constant.dart';
 import 'package:online_voting_system/custom_online.dart';
 
@@ -15,7 +13,7 @@ class OnboardingScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Constants.kWhiteColor,  // White background representing the central color of the Indian flag
+      backgroundColor: Constants.kWhiteColor,
       extendBody: true,
       body: SizedBox(
         width: screenWidth,
@@ -30,7 +28,7 @@ class OnboardingScreen extends StatelessWidget {
                 width: 166,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color.fromARGB(255, 255, 150, 3),  // Saffron color representing the top color of the Indian flag
+                  color: Color.fromARGB(255, 255, 150, 3),
                 ),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(
@@ -53,7 +51,7 @@ class OnboardingScreen extends StatelessWidget {
                 width: 200,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Constants.kGreenColor,  // Green color representing the bottom color of the Indian flag
+                  color: Constants.kGreenColor,
                 ),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(
@@ -86,7 +84,7 @@ class OnboardingScreen extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color.fromARGB(255, 234, 113, 7),  // Saffron color representing the top color of the Indian flag
+                          Color.fromARGB(255, 234, 113, 7),
                           Constants.kWhiteColor.withOpacity(0),
                           Constants.kGreenColor.withOpacity(0.1),
                           Constants.kGreenColor,
@@ -144,16 +142,28 @@ class OnboardingScreen extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Constants.kPinkColor,
+                        Color.fromARGB(255, 255, 169, 137),
                         Constants.kGreenColor,
                       ],
                     ),
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RegistrationScreen()),
-                        );
+                        // Navigate to the Selection screen with custom transition
+                     // Navigate to the Selection screen with a fade transition
+Navigator.push(
+  context,
+  PageRouteBuilder(
+    transitionDuration: Duration(milliseconds: 500),
+    pageBuilder: (context, animation, secondaryAnimation) => SelectionScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: animation,
+        child: child,
+      );
+    },
+  ),
+);
+
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -162,7 +172,7 @@ class OnboardingScreen extends StatelessWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Constants.kPinkColor.withOpacity(0.5),
+                              Color.fromARGB(255, 236, 155, 114).withOpacity(0.5),
                               Constants.kGreenColor.withOpacity(0.5),
                             ],
                           ),
@@ -183,7 +193,7 @@ class OnboardingScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      3,
+                      1,
                       (index) {
                         return Container(
                           height: 7,
