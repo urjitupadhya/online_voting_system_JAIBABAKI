@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import"package:online_voting_system/screens/Homes.dart";
 
 import 'package:online_voting_system/HomeScreen.dart';
 class OtpInputScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class OtpInputScreen extends StatelessWidget {
   Navigator.pushReplacement(
   context,
   MaterialPageRoute(
-    builder: (context) => HomeScreen(), // Instantiate HomeScreen
+    builder: (context) => Homes(), // Instantiate HomeScreen
   ),
 );
 

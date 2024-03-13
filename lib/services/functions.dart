@@ -1,6 +1,8 @@
+// functions.dart
+
 import 'package:flutter/services.dart';
-import 'package:online_voting_system/constants.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:online_voting_system/constants.dart';
 
 Future<DeployedContract> loadContract() async {
   String abi = await rootBundle.loadString('assets/abi.json');
@@ -78,4 +80,41 @@ Future<String> vote(int candidateIndex, Web3Client ethClient) async {
       "vote", [BigInt.from(candidateIndex)], ethClient, voter_private_key);
   print("Vote counted successfully");
   return response;
+}
+
+Future<List<dynamic>> getCandidates(Web3Client ethClient, String electionName) async {
+  try {
+    final contract = await loadContract();
+    final ethFunction = contract.function('getCandidates');
+
+    final result = await ethClient.call(
+      contract: contract,
+      function: ethFunction,
+      params: [EthereumAddress.fromHex(electionName)],
+    );
+
+    return result.cast<String>();
+  } catch (e) {
+    print('Error fetching candidates: $e');
+    return [];
+  }
+}
+
+Future<List<dynamic>> getElectionInfo(String electionName, Web3Client ethClient) async {
+  try {
+    final contract = await loadContract();
+    final ethFunction = contract.function('getElectionInfo');
+
+    final result = await ethClient.call(
+      contract: contract,
+      function: ethFunction,
+      params: [],
+    );
+
+    // Assuming that the function returns a list of dynamic values
+    return result.cast<dynamic>();
+  } catch (e) {
+    print('Error fetching election info: $e');
+    return [];
+  }
 }

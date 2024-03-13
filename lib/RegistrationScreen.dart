@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:online_voting_system/OtpInputScreen.dart';
+import 'package:online_voting_system/screens/homes.dart'; // Import the Homes screen
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -50,13 +51,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   // Navigate to the OTP input screen
-        Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => OtpInputScreen(verificationId: 'your_verification_id'),
-  ),
-);
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtpInputScreen(verificationId: 'your_verification_id'),
+                    ),
+                  );
                 },
                 child: Text('OK'),
               ),
@@ -187,8 +187,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           await _register(context);
                         },
                   style: ElevatedButton.styleFrom(
-                    // primary: Colors.blue,
-                    // onPrimary: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: _isLoading
@@ -196,6 +194,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         )
                       : Text("Register"),
+                ),
+                SizedBox(height: 15),
+                TextButton(
+                  onPressed: () {
+                    // Navigate to the Homes screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Homes()),
+                    );
+                  },
+                  child: Text("Skip"),
                 ),
                 SizedBox(height: 15),
                 TextButton(
