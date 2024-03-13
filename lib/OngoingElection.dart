@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Home.dart'; // Import the VoteScreen
+import 'Home.dart';
 
+ // Import the VoteScreen
+ 
 class OngoingElectionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
