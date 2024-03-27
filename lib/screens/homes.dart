@@ -66,6 +66,7 @@ class _BaseScreenState extends State<BaseScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
+            
           )
         ],
       ),
@@ -115,26 +116,35 @@ class _HomesContentState extends State<HomesContent> {
     );
   }
 
-  void navigateToScreen(BuildContext context, String categoryName) {
-    if (categoryName == 'Voting') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VoterRegistrationScreen(
-            ethClient: ethClient!,
-            electionName: 'electionName',
-          ),
-        ),
-      );
-    } else if (categoryName == 'Result') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultScreen(ethClient: ethClient!),
-        ),
-      );
-    }
+void navigateToScreen(BuildContext context, String categoryName) {
+  Widget? destinationScreen; // Define variable to hold the destination screen
+
+  if (categoryName == 'Voting') {
+    destinationScreen = VoterRegistrationScreen(
+      ethClient: ethClient!,
+      electionName: 'Ram ji',
+    );
+  } else if (categoryName == 'Result') {
+    destinationScreen = ResultScreen(ethClient: ethClient!);
   }
+
+  // Check if destinationScreen is not null
+  if (destinationScreen != null) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: destinationScreen, // Use destination screen directly
+          );
+        },
+      ),
+    );
+  }
+}
+
 }
 
 class CustomAppBar extends StatelessWidget {

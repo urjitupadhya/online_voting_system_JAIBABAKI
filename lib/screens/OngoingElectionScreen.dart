@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:online_voting_system/HomeScreen.dart';
 import 'package:online_voting_system/screens/homes.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/screens/CreateCandidateScreen.dart';

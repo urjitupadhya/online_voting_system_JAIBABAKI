@@ -9,7 +9,9 @@ String owner_private_key =
     "e810001482748db47c9a22cc0c2e7c31936cf2b6e7fbce6e90c8bf9a902bfca5";
 
 String voter_private_key =
-    "e810001482748db47c9a22cc0c2e7c31936cf2b6e7fbce6e90c8bf9a902bfca5";// Online voting mail 
+    "b6f15f94879ede75a03d40f0cf01df369c534c555eefecc62799d48646e86b48";
+//    "e810001482748db47c9a22cc0c2e7c31936cf2b6e7fbce6e90c8bf9a902bfca5";// Online voting mail
+
 //"99e0582bbb4aa885387e683ad8e7a69680d99cda8214f59ba8f5f2c4257d681a"; //   "101ec7d08ceaf752728f323b5b8ebc1bbeac3746420eeb6720f3ec37b491ce83";
 // "0xfDFc825704253B3D1197A1cd975cA9eef20652AE";
 
