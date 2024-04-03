@@ -79,8 +79,7 @@ class _VoterRegistrationScreenState extends State<VoterRegistrationScreen> {
                           hintText: 'Enter Voter Address',
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 20),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
                         ),
                       ),
                     ),
@@ -97,6 +96,7 @@ class _VoterRegistrationScreenState extends State<VoterRegistrationScreen> {
                                 voterAddressController.text.trim();
                             if (voterAddress.isNotEmpty) {
                               try {
+                                // Authorize the voter using the provided voter address
                                 await authorizeVoter(
                                   voterAddress,
                                   widget.ethClient,

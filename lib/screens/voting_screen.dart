@@ -37,48 +37,19 @@ class _VotingScreenState extends State<VotingScreen> {
     });
   }
 
-  // Function to generate random light color
   Color generateRandomColor() {
-    final int minLightness = 150; // Minimum value for generating light colors
-    final int maxLightness = 255; // Maximum value for generating light colors
+    final int minLightness = 150;
+    final int maxLightness = 255;
 
     return Color.fromARGB(
-      255, // Set alpha value to 255 for full opacity
-      minLightness + Random().nextInt(maxLightness - minLightness), // Generate random lightness for red component
-      minLightness + Random().nextInt(maxLightness - minLightness), // Generate random lightness for green component
-      minLightness + Random().nextInt(maxLightness - minLightness), // Generate random lightness for blue component
+      255,
+      minLightness + Random().nextInt(maxLightness - minLightness),
+      minLightness + Random().nextInt(maxLightness - minLightness),
+      minLightness + Random().nextInt(maxLightness - minLightness),
     );
   }
 
-  // Function to generate unique symbols for each candidate
-  IconData generateUniqueSymbol() {
-    List<IconData> symbols = [
-      Icons.flag,
-      Icons.people,
-      Icons.star,
-      Icons.poll,
-      Icons.group,
-      Icons.shield,
-      Icons.verified_user,
-      Icons.history,
-      Icons.attach_money,
-      Icons.emoji_symbols,
-      Icons.account_circle,
-      Icons.business,
-      Icons.speaker_group,
-      Icons.assignment_ind,
-      Icons.pie_chart,
-      Icons.fingerprint,
-      Icons.business_center,
-      Icons.work,
-      Icons.playlist_add_check,
-      Icons.timeline,
-      Icons.merge_type,
-    ];
-    return symbols[Random().nextInt(symbols.length)];
-  }
 
-  // Function to show Snackbar indicating successful vote count
   void _showVoteCountSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -87,7 +58,7 @@ class _VotingScreenState extends State<VotingScreen> {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 16),
         ),
-        backgroundColor: Colors.green, // Customize background color of the Snackbar
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -105,95 +76,109 @@ class _VotingScreenState extends State<VotingScreen> {
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 160, 212, 255), // Setting the background color to blue
+      backgroundColor: const Color.fromARGB(255, 160, 212, 255),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(14),
           child: _loading
               ? Center(child: CircularProgressIndicator())
               : FutureBuilder<List>(
-                  future: getCandidatesNum(widget.ethClient),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          for (int i = 0; i < snapshot.data![0].toInt(); i++)
-                            FutureBuilder<List>(
-                              future: candidateInfo(i, widget.ethClient),
-                              builder: (context, candidatesnapshot) {
-                                if (candidatesnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else {
-                                  return Card(
-                                    elevation: 4,
-                                    margin: EdgeInsets.symmetric(vertical: 8),
-                                    color: generateRandomColor(), // Assigning random light color to each card
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            future: getCandidatesNum(widget.ethClient),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (int i = 0; i < snapshot.data![0].toInt(); i++)
+                      FutureBuilder<List>(
+                        future: candidateInfo(i, widget.ethClient),
+                        builder: (context, candidatesnapshot) {
+                          if (candidatesnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Card(
+                              elevation: 4,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              color: generateRandomColor(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Candidate ${i + 1}',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                candidatesnapshot.data![0][0].toString(),
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
+                                          Text(
+                                            'Candidate ${i + 1}',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                          CircleAvatar(
-                                            child: Icon(generateUniqueSymbol()), // Displaying unique symbol
-                                            backgroundColor:
-Colors.white, // You can customize the color as needed
+                                          Text(
+                                            candidatesnapshot.data![0][0]
+                                                .toString(),
+                                            style:
+                                            TextStyle(fontSize: 16),
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              try {
-                                                // Implement the voting functionality here
-                                                await vote(i, widget.ethClient);
-                                                _refreshCandidates();
-                                                // Show Snackbar when vote count is successful
-                                                _showVoteCountSnackbar(context);
-                                              } catch (error) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text('════════\nAnother exception was thrown:\n$error'),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            child: Text('Vote'),
+                                          Text(
+                                            'Constituency: ${candidatesnapshot.data![0][6].toString()}',
+                                            style:
+                                            TextStyle(fontSize: 16),
                                           ),
+                                          Text(
+                                            'Party Name: ${candidatesnapshot.data![0][7].toString()}',
+                                            style:
+                                            TextStyle(fontSize: 16),
+                                          ),
+                              
                                         ],
                                       ),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                        ],
-                      );
-                    }
-                  },
-                ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          try {
+                                            await vote(
+                                                i, widget.ethClient);
+                                            _refreshCandidates();
+                                            _showVoteCountSnackbar(
+                                                context);
+                                          } catch (error) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    '════════\nAnother exception was thrown:\n$error'),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Text('Vote'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );

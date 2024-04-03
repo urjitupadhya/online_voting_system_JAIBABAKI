@@ -7,6 +7,54 @@
 				"internalType": "string",
 				"name": "candidateName",
 				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "dob",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "fatherName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "education",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "placeOfBirth",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "candidateAddress",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "constituency",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "partyName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "hasCriminalRecord",
+				"type": "bool"
 			}
 		],
 		"name": "CandidateAdded",
@@ -63,6 +111,46 @@
 				"internalType": "string",
 				"name": "_candidateName",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_dob",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_fatherName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_education",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_placeOfBirth",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_candidateAddress",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_constituency",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_partyName",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "_hasCriminalRecord",
+				"type": "bool"
 			}
 		],
 		"name": "addCandidate",
@@ -101,6 +189,46 @@
 						"type": "string"
 					},
 					{
+						"internalType": "string",
+						"name": "dob",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "fatherName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "education",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "placeOfBirth",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "candidateAddress",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "constituency",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "partyName",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasCriminalRecord",
+						"type": "bool"
+					},
+					{
 						"internalType": "uint256",
 						"name": "numVotes",
 						"type": "uint256"
@@ -128,6 +256,46 @@
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dob",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "fatherName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "education",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "placeOfBirth",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "candidateAddress",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "constituency",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "partyName",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "hasCriminalRecord",
+				"type": "bool"
 			},
 			{
 				"internalType": "uint256",

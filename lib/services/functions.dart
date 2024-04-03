@@ -36,9 +36,8 @@ Future<String> startElection(String name, Web3Client ethClient) async {
   return response;
 }
 
-Future<String> addCandidate(String name, Web3Client ethClient) async {
-  var response =
-      await callFunction('addCandidate', [name], ethClient, owner_private_key);
+Future<String> addCandidate(String name, String dob, String fatherName, String education, String placeOfBirth, String candidateAddress, String constituency, String partyName, bool hasCriminalRecord, Web3Client ethClient) async {
+  var response = await callFunction('addCandidate', [name, dob, fatherName, education, placeOfBirth, candidateAddress, constituency, partyName, hasCriminalRecord], ethClient, owner_private_key);
   print('Candidate added successfully');
   return response;
 }

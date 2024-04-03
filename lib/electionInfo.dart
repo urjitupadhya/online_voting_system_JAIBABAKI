@@ -19,6 +19,9 @@ class ElectionInfo extends StatefulWidget {
 class _ElectionInfoState extends State<ElectionInfo> {
   TextEditingController addCandidateController = TextEditingController();
   TextEditingController authorizeVoterController = TextEditingController();
+  TextEditingController constituencyController = TextEditingController();
+  TextEditingController partyNameController = TextEditingController();
+  bool hasCriminalRecord = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,17 +94,55 @@ class _ElectionInfoState extends State<ElectionInfo> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    addCandidate(
-                      addCandidateController.text,
-                      widget.ethClient,
-                    );
+                SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: constituencyController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Constituency Name',
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: partyNameController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Party Name',
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Checkbox(
+                  value: hasCriminalRecord,
+                  onChanged: (value) {
+                    setState(() {
+                      hasCriminalRecord = value!;
+                    });
                   },
-                  child: Text('Add Candidate'),
-                )
+                ),
+                Text('Has Criminal Record?'),
               ],
             ),
+            ElevatedButton(
+              onPressed: () {
+                addCandidate(
+                  addCandidateController.text,
+                  // Added additional parameters for candidate
+                  "01/01/1990", // Sample dob
+                  "John Doe Sr.", // Sample father's name
+                  "Bachelor's Degree", // Sample education qualification
+                  "New York", // Sample place of birth
+                  "0x123...789", // Sample address
+                  constituencyController.text,
+                  partyNameController.text,
+                  hasCriminalRecord,
+                  widget.ethClient,
+                );
+              },
+              child: Text('Add Candidate'),
+            ),
+            SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -119,7 +160,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                       widget.ethClient,
                     );
                   },
-                  child: Text('Add Voter'),
+                  child: Text('Authorize Voter'),
                 )
               ],
             ),

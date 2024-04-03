@@ -18,7 +18,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   void dispose() {
-    _confettiController.dispose(); // Dispose the confetti controller
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -27,9 +27,9 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Election Results'),
-        backgroundColor: const Color.fromARGB(255, 161, 202, 235), // Change app bar background color
+        backgroundColor: Color.fromARGB(255, 161, 202, 235),
       ),
-      backgroundColor: const Color.fromARGB(255, 161, 202, 235), // Set background color to light blue
+      backgroundColor: Color.fromARGB(255, 161, 202, 235),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -55,27 +55,41 @@ class _ResultScreenState extends State<ResultScreen> {
                                   child: CircularProgressIndicator(),
                                 );
                               } else {
+                                var candidateData =
+                                    candidatesnapshot.data![0];
                                 return Card(
                                   elevation: 4,
                                   margin: EdgeInsets.symmetric(vertical: 8),
-                                  color: Color.fromARGB(255, 213, 233, 217), // Set the color of the box to white
+                                  color: Color.fromARGB(255, 213, 233, 217),
                                   child: ListTile(
                                     title: Text(
-                                      'Name: ' +
-                                          candidatesnapshot.data![0][0]
-                                              .toString(),
+                                      'Name: ${candidateData[0]}',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                       ),
                                     ),
-                                    subtitle: Text(
-                                      'Votes: ' +
-                                          candidatesnapshot.data![0][1]
-                                              .toString(),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Constituency: ${candidateData[6]}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        Text(
+                                          'Party: ${candidateData[7]}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        Text(
+                                          'Votes: ${candidateData[9]}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        // Text(
+                                        //   'Criminal Record: ${candidateData[3]}',
+                                        //   style: TextStyle(fontSize: 16),
+                                        // ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -94,19 +108,18 @@ class _ResultScreenState extends State<ResultScreen> {
               alignment: Alignment.center,
               child: ConfettiWidget(
                 confettiController: _confettiController,
-                blastDirectionality: BlastDirectionality
-                    .explosive, // Set the direction of the confetti blast
-                shouldLoop: false, // Do not loop the confetti animation
-                numberOfParticles: 50, // Number of confetti particles
-                gravity: 0.1, // Set the gravity effect
-                emissionFrequency: 0.1, // Set the emission frequency
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                numberOfParticles: 50,
+                gravity: 0.1,
+                emissionFrequency: 0.1,
                 colors: [
                   Colors.green,
                   Colors.blue,
                   Colors.pink,
                   Colors.orange,
                   Colors.purple,
-                ], // Set the colors of the confetti
+                ],
               ),
             ),
           ),
@@ -114,7 +127,6 @@ class _ResultScreenState extends State<ResultScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Trigger confetti effect when the button is pressed
           _confettiController.play();
         },
         child: Icon(Icons.celebration),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:online_voting_system/screens/homes.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/screens/CreateCandidateScreen.dart';
 import 'package:online_voting_system/services/functions.dart';
 import 'package:online_voting_system/Home.dart';
-import'package:online_voting_system/Selection.dart';
+import 'package:online_voting_system/Selection.dart';
+
 class OngoingElectionScreen extends StatefulWidget {
   final Web3Client ethClient;
   final String electionName;
@@ -38,15 +38,15 @@ class _OngoingElectionScreenState extends State<OngoingElectionScreen> {
     });
   }
 
-@override
-Widget build(BuildContext context) {
-  return WillPopScope(
-    onWillPop: () async {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-      return false;
-    },
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+        return false;
+      },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 194, 235, 254),
         appBar: AnimatedAppBar(
@@ -69,7 +69,19 @@ Widget build(BuildContext context) {
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: _loading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text(
+                        'Fetching candidates...',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                )
               : FutureBuilder<List>(
                   future: getCandidatesNum(widget.ethClient),
                   builder: (context, snapshot) {
@@ -90,6 +102,26 @@ Widget build(BuildContext context) {
                                 final color = Colors
                                     .primaries[index % Colors.primaries.length];
 
+                                // Extract candidate information
+                                final candidateName =
+                                    candidatesnapshot.data![0][0].toString();
+                                final dob =
+                                    candidatesnapshot.data![0][1].toString();
+                                final fatherName =
+                                    candidatesnapshot.data![0][2].toString();
+                                final education =
+                                    candidatesnapshot.data![0][3].toString();
+                                final placeOfBirth =
+                                    candidatesnapshot.data![0][4].toString();
+                                final address =
+                                    candidatesnapshot.data![0][5].toString();
+                                final constituency =
+                                    candidatesnapshot.data![0][6].toString();
+                                final partyName =
+                                    candidatesnapshot.data![0][7].toString();
+                                // final hasCriminalRecord =
+                                //     candidatesnapshot.data![0][8];
+
                                 return Card(
                                   elevation: 4,
                                   margin: EdgeInsets.symmetric(vertical: 8),
@@ -98,20 +130,52 @@ Widget build(BuildContext context) {
                                     child: ListTile(
                                       leading: CircleAvatar(
                                         backgroundColor: Colors.white,
-                                        child: Icon(Icons
-                                            .person), // Placeholder icon, replace with candidate logo
+                                        child: Icon(Icons.person),
                                       ),
                                       title: Text(
-                                        'Candidate ${index + 1}',
+                                        candidateName,
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      subtitle: Text(
-                                        candidatesnapshot.data![0][0]
-                                            .toString(),
-                                        style: TextStyle(fontSize: 16),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Date of Birth: $dob',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Father\'s Name: $fatherName',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Education Qualification: $education',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Place of Birth: $placeOfBirth',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Address: $address',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Constituency: $constituency',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Party Name: $partyName',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          //Text(
+                                    //        'Has Criminal Record: $hasCriminalRecord',
+                                      //      style: TextStyle(fontSize: 16),
+                                        //  ),
+                                        ],
                                       ),
                                     ),
                                   ),

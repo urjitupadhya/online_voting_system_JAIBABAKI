@@ -21,7 +21,8 @@ class Homes extends StatelessWidget {
   }
 }
 
-const Color orangeGreenMixture = Color.fromRGBO(139, 208, 255, 0.875); // Orange color
+const Color orangeGreenMixture =
+    Color.fromRGBO(201, 245, 212, 0.875); // Orange color
 
 class BaseScreen extends StatefulWidget {
   const BaseScreen({Key? key}) : super(key: key);
@@ -66,7 +67,6 @@ class _BaseScreenState extends State<BaseScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
-            
           )
         ],
       ),
@@ -116,45 +116,41 @@ class _HomesContentState extends State<HomesContent> {
     );
   }
 
-void navigateToScreen(BuildContext context, String categoryName) {
-  Widget? destinationScreen; // Define variable to hold the destination screen
+  void navigateToScreen(BuildContext context, String categoryName) {
+    Widget? destinationScreen; // Define variable to hold the destination screen
 
-  if (categoryName == 'Voting') {
-    destinationScreen = VoterRegistrationScreen(
-      ethClient: ethClient!,
-      electionName: 'Ram ji',
-    );
-  } else if (categoryName == 'Result') {
-    destinationScreen = ResultScreen(ethClient: ethClient!);
+    if (categoryName == 'Voting') {
+      destinationScreen = VoterRegistrationScreen(
+        ethClient: ethClient!,
+        electionName: 'LOK SABHA',
+      );
+    } else if (categoryName == 'Result') {
+      destinationScreen = ResultScreen(ethClient: ethClient!);
+    }
+
+    // Check if destinationScreen is not null
+    if (destinationScreen != null) {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionDuration: Duration(milliseconds: 500),
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return FadeTransition(
+              opacity: animation,
+              child: destinationScreen, // Use destination screen directly
+            );
+          },
+        ),
+      );
+    }
   }
-
-  // Check if destinationScreen is not null
-  if (destinationScreen != null) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 500),
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return FadeTransition(
-            opacity: animation,
-            child: destinationScreen, // Use destination screen directly
-          );
-        },
-      ),
-    );
-  }
-}
-
 }
 
 class CustomAppBar extends StatelessWidget {
-  
   final TextEditingController _searchController = TextEditingController();
 
-  
-
-  static const Color appBarColor1 = Color(0xFFB2DFDB);
-  static const Color appBarColor2 = Color(0xFF80CBC4);
+  static const Color appBarColor1 = Color.fromARGB(255, 238, 254, 253);
+  static const Color appBarColor2 = Color.fromARGB(255, 253, 213, 168);
 
   String _getGreeting() {
     final now = DateTime.now();
@@ -167,8 +163,6 @@ class CustomAppBar extends StatelessWidget {
     } else {
       return 'Good Evening ';
     }
-
-
   }
 
   @override
@@ -211,7 +205,7 @@ class CustomAppBar extends StatelessWidget {
                   );
                 },
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/icons/uu.jpg'),
+                  backgroundImage: AssetImage('assets/icons/p.png'),
                   radius: 30,
                 ),
               ),
@@ -236,7 +230,7 @@ class CustomAppBar extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>ElectionInformationScreen(),
+                      builder: (context) => ElectionInformationScreen(),
                     ),
                   );
                 },
@@ -249,8 +243,7 @@ class CustomAppBar extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                       ContactUsScreen(),
+                      builder: (context) => ContactUsScreen(),
                     ),
                   );
                 },
@@ -259,11 +252,10 @@ class CustomAppBar extends StatelessWidget {
                 icon: Icons.article,
                 label: 'Feedback',
                 onPressed: () {
-                       Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                       FeedbackScreen(),
+                      builder: (context) => FeedbackScreen(),
                     ),
                   );
                 },
@@ -283,8 +275,8 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstRowCategories = categoryList.sublist(0,1);
-    final secondRowCategories = categoryList.sublist(1,2);
+    final firstRowCategories = categoryList.sublist(0, 1);
+    final secondRowCategories = categoryList.sublist(1, 2);
 
     return Column(
       children: [
@@ -307,8 +299,8 @@ class Body extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: CategoryCard(
                     category: firstRowCategories[index],
-                    onTap: () =>
-                        navigateToScreen(context, firstRowCategories[index].name),
+                    onTap: () => navigateToScreen(
+                        context, firstRowCategories[index].name),
                     navigateToScreen: navigateToScreen,
                   ),
                 );
@@ -329,8 +321,8 @@ class Body extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: CategoryCard(
                     category: secondRowCategories[index],
-                    onTap: () =>
-                        navigateToScreen(context, secondRowCategories[index].name),
+                    onTap: () => navigateToScreen(
+                        context, secondRowCategories[index].name),
                     navigateToScreen: navigateToScreen,
                   ),
                 );
@@ -361,10 +353,10 @@ class CircleIconButton extends StatelessWidget {
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: Color.fromARGB(255, 17, 17, 17),
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
             child: Icon(
               icon,
-              color: Colors.white,
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
           ),
           SizedBox(height: 8),
@@ -394,35 +386,46 @@ class CategoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
-        width: cardWidth, // Use the calculated width
-        height: 180, // Set the height of the card
+        width: cardWidth,
+        height: 220,
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 159, 181, 255),
+          color: Colors.grey[200], // Background color of the box
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 91, 146, 255).withOpacity(.1),
+              color: Colors.grey.withOpacity(0.5), // Shadow color
               blurRadius: 5.0,
-              spreadRadius: 8,
+              spreadRadius: 3,
+              offset: Offset(0, 3), // Adjust the shadow offset as needed
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            Icon(
-              Icons.category, // Add an icon for the category
-              size: 48,
-              color: Colors.white,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                category.thumbnail,
+                fit: BoxFit.cover,
+              ),
             ),
-            SizedBox(height: 10),
-            Text(
-              category.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                color: Colors.black.withOpacity(0.5),
+                child: Text(
+                  category.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -443,8 +446,12 @@ class Category {
 }
 
 final categoryList = <Category>[
-  Category(name: 'Voting', thumbnail: ''), // Removed the image path
-  Category(name: 'Result', thumbnail: ''), // Removed the image path
+  Category(
+      name: 'Voting',
+      thumbnail: 'assets/icons/v.png'), // Removed the image path
+  Category(
+      name: 'Result',
+      thumbnail: 'assets/icons/q.png'), // Removed the image path
 ];
 
 const double kCategoryCardImageSize = 140.0;
