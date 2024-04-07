@@ -12,7 +12,7 @@ dependencies:
   http:
   cupertino_icons: ^1.0.2
   video_player: ^2.8.3
-  
+  provider: ^6.1.2
   flutter_svg: ^2.0.9
   flutter_ui_toolkit: ^0.0.3+9
   firebase_core: ^2.25.3
@@ -36,6 +36,8 @@ dependencies:
   confetti: ^0.7.0
   simple_animations: ^5.0.2
   audioplayers: ^6.0.0
+  flutter_map: ^6.1.0
+  mailer: ^6.1.0
 
 
 
@@ -68,10 +70,11 @@ flutter:
     - assets/icons/p.png
     - assets/icons/v.png
     - assets/icons/q.png
-    - assets/images/p.png
+    - assets/images/pp.jpg
     - assets/images/v.png
     - assets/images/q.png
     - assets/icons/i.png
+    - assets/images/r.jpg
   fonts:
     - family: Nunito
       fonts:

@@ -15,6 +15,13 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   final ConfettiController _confettiController = ConfettiController();
+  late AssetImage _backgroundImage; // Declare the AssetImage variable
+
+  @override
+  void initState() {
+    super.initState();
+    _backgroundImage = AssetImage('assets/images/ww.png'); // Load the background image
+  }
 
   @override
   void dispose() {
@@ -27,11 +34,27 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Election Results'),
-        backgroundColor: Color.fromARGB(255, 161, 202, 235),
+        backgroundColor: Colors.white,
       ),
-      backgroundColor: Color.fromARGB(255, 161, 202, 235),
       body: Stack(
         children: [
+          // Background Image with Opacity
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: _backgroundImage, // Use the loaded background image
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Opacity(
+                opacity: 0.5, // Adjust the opacity as desired
+                child: Container(
+                  color: Colors.white, // Background color with opacity
+                ),
+              ),
+            ),
+          ),
           SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(14),
@@ -60,7 +83,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                 return Card(
                                   elevation: 4,
                                   margin: EdgeInsets.symmetric(vertical: 8),
-                                  color: Color.fromARGB(255, 213, 233, 217),
+                                  color: Colors.white.withOpacity(0.7), // Transparent with opacity
                                   child: ListTile(
                                     title: Text(
                                       'Name: ${candidateData[0]}',
@@ -85,10 +108,6 @@ class _ResultScreenState extends State<ResultScreen> {
                                           'Votes: ${candidateData[9]}',
                                           style: TextStyle(fontSize: 16),
                                         ),
-                                        // Text(
-                                        //   'Criminal Record: ${candidateData[3]}',
-                                        //   style: TextStyle(fontSize: 16),
-                                        // ),
                                       ],
                                     ),
                                   ),
@@ -103,6 +122,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
           ),
+          // Confetti Animation
           Positioned.fill(
             child: Align(
               alignment: Alignment.center,

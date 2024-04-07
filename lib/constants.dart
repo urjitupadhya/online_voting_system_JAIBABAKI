@@ -9,15 +9,17 @@ String infura_url =
 String owner_private_key =
     "e810001482748db47c9a22cc0c2e7c31936cf2b6e7fbce6e90c8bf9a902bfca5";
 
-String voter_private_key =
-    "99e0582bbb4aa885387e683ad8e7a69680d99cda8214f59ba8f5f2c4257d681a";
+String voter_private_key = "b6f15f94879ede75a03d40f0cf01df369c534c555eefecc62799d48646e86b48";
+// "99e0582bbb4aa885387e683ad8e7a69680d99cda8214f59ba8f5f2c4257d681a";
+//"99e0582bbb4aa885387e683ad8e7a69680d99cda8214f59ba8f5f2c4257d681a";
 // "101ec7d08ceaf752728f323b5b8ebc1bbeac3746420eeb6720f3ec37b491ce83";
 //    "e810001482748db47c9a22cc0c2e7c31936cf2b6e7fbce6e90c8bf9a902bfca5";// Online voting mail
 
 //"99e0582bbb4aa885387e683ad8e7a69680d99cda8214f59ba8f5f2c4257d681a"; //   "101ec7d08ceaf752728f323b5b8ebc1bbeac3746420eeb6720f3ec37b491ce83";
 // "0xfDFc825704253B3D1197A1cd975cA9eef20652AE";
 
-String contractAddress1 = "0x3B92046343A3FB0890e9669AdD0126101bE77580";
+String contractAddress1 =
+    "0xCeEe44b4dA59F55Cdcefc4859A1582D126732F0E";// "0x3B92046343A3FB0890e9669AdD0126101bE77580";
 //"0x2143Cd40C63E989d0365909E1E91e8E5CeceE0FC";
   //  "0x0798057a91aC81de6b3A8B1AaD62831668819a1f"; // Online voting system email
 // "0x502183Cfcdf5E7415ff62867fEdA9f93B47Db5dc";
