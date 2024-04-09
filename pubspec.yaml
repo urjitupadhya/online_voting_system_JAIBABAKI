@@ -38,6 +38,7 @@ dependencies:
   audioplayers: ^6.0.0
   flutter_map: ^6.1.0
   mailer: ^6.1.0
+  firebase_database: ^10.5.0
 
 
 
@@ -75,6 +76,9 @@ flutter:
     - assets/images/q.png
     - assets/icons/i.png
     - assets/images/r.jpg
+
+
+
   fonts:
     - family: Nunito
       fonts:

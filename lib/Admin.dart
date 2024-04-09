@@ -23,24 +23,40 @@ class _AdminState extends State<Admin> {
       _isLoading = true;
     });
 
+    // Credentials
+    final String validUsername = 'E';
+    final String validPassword = 'E';
+
     try {
       // Simulate admin login (replace this with actual admin login logic)
       await Future.delayed(Duration(seconds: 2));
 
-      // If login is successful, navigate to the AdminHomeScreen
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: Duration(milliseconds: 500),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          pageBuilder: (context, animation, secondaryAnimation) => Home(),
-        ),
-      );
+      // Check if entered credentials match the valid ones
+      if (_usernameController.text.trim() == validUsername &&
+          _passwordController.text == validPassword) {
+        // If login is successful, navigate to the AdminHomeScreen
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 500),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) => Home(),
+          ),
+        );
+      } else {
+        // Display a snackbar with an error message for invalid credentials
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid username or password'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     } catch (e) {
       print('Error logging in: $e');
       // Display a snackbar with an error message

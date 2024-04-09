@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:online_voting_system/components/curved-left-shadow.dart';
 import 'package:online_voting_system/components/curved-left.dart';
 import 'package:online_voting_system/components/curved-right-shadow.dart';
 import 'package:online_voting_system/components/curved-right.dart';
 import 'package:online_voting_system/OtpInputScreen.dart';
-import 'package:online_voting_system/screens/homes.dart'; // Import the Homes screen
+import 'package:online_voting_system/screens/homes.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -18,55 +19,85 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _aadharController =
-      TextEditingController(); // Controller for Aadhar card field
+  final TextEditingController _aadharController = TextEditingController();
   bool _isLoading = false;
-  String _selectedCountryCode = '+91'; // Default country code for India
+  String _selectedCountryCode = '+91';
   bool _obscurePassword = true;
 
+  // Function to handle code sent
+  void codeSent(String verificationId, int? resendToken) {
+    // Store verificationId somewhere, we will use it later
+    print('Code sent to ${_phoneController.text.trim()}');
+    // Navigate to the OTP input screen with the actual verification ID
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtpInputScreen(verificationId: verificationId),
+      ),
+    );
+  }
+
+  // Function to register user
   Future<void> _register(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      String completePhoneNumber =
-          _selectedCountryCode + _phoneController.text.trim();
+      String completePhoneNumber = _selectedCountryCode + _phoneController.text.trim();
 
-      // Check for email validity
-      if (_emailController.text.trim().isEmpty || !_emailController.text.trim().contains("@")) {
-        throw FirebaseAuthException(
-          code: 'firebase_auth/invalid-email',
-          message: 'The email address is badly formatted.',
+      // Check if Aadhar card number already exists
+      DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
+      DatabaseEvent event = await usersRef.orderByChild('aadharCardNumber').equalTo(_aadharController.text.trim()).once();
+      DataSnapshot dataSnapshot = event.snapshot;
+
+      if (dataSnapshot.value != null) {
+        // Aadhar card number already exists, show pop-up message
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Registration Error'),
+              content: Text('User already registered with this Aadhar card number.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
         );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
       }
-
-      // Check for password length
-      if (_passwordController.text.length < 6) {
-        throw FirebaseAuthException(
-          code: 'firebase_auth/weak-password',
-          message: 'Password should be at least 6 characters.',
-        );
-      }
-
-      // Check Aadhar card number length
-      if (_aadharController.text.length != 12) {
-        throw Exception('Aadhar card number should be 12 digits.');
-      }
-
-      // Create a new user with email and password
+      // Proceed with registration
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+      DatabaseReference userRef = FirebaseDatabase.instance.reference().child('users').child(userCredential.user!.uid);
+      await userRef.set({
+        'email': _emailController.text.trim(),
+        'phoneNumber': completePhoneNumber,
+        'aadharCardNumber': _aadharController.text.trim(),
+      });
 
-      // Send email verification
+      // Request phone authentication
+      await _auth.verifyPhoneNumber(
+        phoneNumber: completePhoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {},
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+
       await userCredential.user!.sendEmailVerification();
 
-      // Perform phone number verification
-      await _verifyPhoneNumber(completePhoneNumber);
-
-      // Display a dialog prompting the user to check their email and enter OTP
       showDialog(
         context: context,
         builder: (context) {
@@ -90,13 +121,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  // Navigate to the OTP input screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OtpInputScreen(verificationId: 'your_verification_id'),
-                    ),
-                  );
                 },
                 child: Text('OK'),
               ),
@@ -112,7 +136,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       } else if (e is Exception) {
         errorMessage = e.toString();
       }
-      // Display an error message to the user
       showDialog(
         context: context,
         builder: (context) {
@@ -137,56 +160,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  Future<void> _verifyPhoneNumber(String phoneNumber) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Auto-retrieval of the SMS code
-        await _auth.signInWithCredential(credential);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print('Phone verification failed: $e');
-        // Handle verification failed
-      },
-
-      codeSent: (String verificationId, int? resendToken) {
-        // Store verificationId somewhere, we will use it later
-        print('Code sent to $phoneNumber');
-        // Navigate to the OTP input screen with the actual verification ID
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                OtpInputScreen(verificationId: verificationId),
-          ),
-        );
-      },
-
-      codeAutoRetrievalTimeout: (String verificationId) {
-        // Auto-retrieval timeout
-        print('Code auto retrieval timeout');
-      },
-      timeout: Duration(seconds: 60), // Timeout duration
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          false, // Set this property to false to keep the screen static when keyboard appears
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 252, 252, 252),
       body: Container(
         child: Stack(
           children: <Widget>[
             Positioned(top: 0, left: 0, child: CurvedLeftShadow()),
             Positioned(
-                top: 0,
-                left: 0,
-                child: CurvedLeft(
-                  saffronColor1: const Color.fromARGB(255, 255, 211, 145),
-                  saffronColor2: const Color.fromARGB(255, 253, 186, 165),
-                )),
+              top: 0,
+              left: 0,
+              child: CurvedLeft(
+                saffronColor1: const Color.fromARGB(255, 255, 211, 145),
+                saffronColor2: const Color.fromARGB(255, 253, 186, 165),
+              ),
+            ),
             Positioned(bottom: 0, left: 0, child: CurvedRightShadow()),
             Positioned(bottom: 0, left: 0, child: CurvedRight()),
             Center(
@@ -202,47 +192,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 139, 196, 243)
-                              .withOpacity(0.8), // Highlight color
+                          color: const Color.fromARGB(255, 139, 196, 243).withOpacity(0.8),
                         ),
                       ),
                       SizedBox(height: 5),
                       Column(
                         children: [
-                          _buildInputField(
-                            Icons.mail,
-                            "Email",
-                            TextInputType.emailAddress,
-                            _emailController,
-                          ),
+                          _buildInputField(Icons.mail, "Email", TextInputType.emailAddress, _emailController),
                           SizedBox(height: 5),
-                          _buildInputField(
-                            Icons.lock,
-                            "Password",
-                            TextInputType.text,
-                            _passwordController,
-                            isPassword: true,
-                          ),
+                          _buildInputField(Icons.lock, "Password", TextInputType.text, _passwordController, isPassword: true),
                           SizedBox(height: 5),
-                          _buildInputField(
-                            Icons.credit_card,
-                            "Aadhar Card",
-                            TextInputType.number,
-                            _aadharController,
-                          ),
+                          _buildInputField(Icons.credit_card, "Aadhar Card", TextInputType.number, _aadharController),
                           SizedBox(height: 5),
                           Row(
                             children: [
                               CountryCodePicker(
                                 onChanged: (CountryCode? countryCode) {
                                   setState(() {
-                                    _selectedCountryCode =
-                                        countryCode!.dialCode!;
+                                    _selectedCountryCode = countryCode!.dialCode!;
                                   });
                                 },
-                                initialSelection:
-                                    'IN', // Initial selected country code for India
-                                favorite: ['+91', 'IN'], // Your country codes
+                                initialSelection: 'IN',
+                                favorite: ['+91', 'IN'],
                               ),
                               SizedBox(width: 5),
                               Container(
@@ -252,9 +223,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromARGB(
-                                              255, 139, 196, 243)
-                                          .withOpacity(0.5),
+                                      color: const Color.fromARGB(255, 139, 196, 243).withOpacity(0.5),
                                       spreadRadius: 5,
                                       blurRadius: 7,
                                       offset: Offset(0, 3),
@@ -263,14 +232,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.phone_android,
-                                        color:
-                                            Color.fromARGB(255, 139, 196, 243)),
+                                    Icon(Icons.phone_android, color: Color.fromARGB(255, 139, 196, 243)),
                                     SizedBox(width: 5),
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                                         child: TextField(
                                           decoration: InputDecoration(
                                             hintText: "Phone Number",
@@ -290,24 +256,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () async {
-                                await _register(context);
-                              },
+                        onPressed: _isLoading ? null : () async {
+                          await _register(context);
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor :  Color.fromARGB(255, 178, 217, 249), // Adjust color here
-                           shadowColor:  Color.fromARGB(255, 245, 245, 245)
+                          backgroundColor: Color.fromARGB(255, 178, 217, 249),
+                          shadowColor: Color.fromARGB(255, 245, 245, 245),
                         ),
                         child: _isLoading
-                            ? CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              )
+                            ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
                             : Text("Register", style: TextStyle(color: Colors.white)),
                       ),
                     ],
@@ -343,8 +304,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(255, 139, 196, 243)
-                        .withOpacity(0.5),
+                    color: const Color.fromARGB(255, 139, 196, 243).withOpacity(0.5),
                     spreadRadius: 5,
                     blurRadius: 7,
                     offset: Offset(0, 3),
@@ -355,9 +315,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 decoration: InputDecoration(
                   labelText: label,
                   hintText: label,
-                  hintStyle: TextStyle(
-                      color: Color.fromARGB(
-                          255, 139, 196, 243)), // Adjust hint text color
+                  hintStyle: TextStyle(color: Color.fromARGB(255, 139, 196, 243)),
                   border: InputBorder.none,
                 ),
                 keyboardType: inputType,

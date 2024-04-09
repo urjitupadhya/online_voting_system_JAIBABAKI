@@ -30,7 +30,7 @@ class _VotingScreenState extends State<VotingScreen> {
     setState(() {
       _loading = true;
     });
-    await Future.delayed(Duration(seconds: 1)); // Simulating fetching data
+    await Future.delayed(Duration(seconds: 0)); // Simulating fetching data
     setState(() {
       _loading = false;
     });
@@ -175,9 +175,15 @@ class _VotingScreenState extends State<VotingScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
+                           return Center(
+  child: Text(
+    'Loading Candidates',
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+    ),
+  ),
+);
                         } else {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -191,7 +197,7 @@ class _VotingScreenState extends State<VotingScreen> {
                                     if (candidatesnapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       return Center(
-                                        child: CircularProgressIndicator(),
+                                //        child: CircularProgressIndicator(),
                                       );
                                     } else {
                                       return _buildCandidateCard(

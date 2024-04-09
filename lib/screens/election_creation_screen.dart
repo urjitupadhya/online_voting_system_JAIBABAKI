@@ -94,17 +94,6 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
       resizeToAvoidBottomInset: false, // Prevent screen resizing when keyboard appears
       body: Stack(
         children: [
-          // Background Image
-          Positioned.fill(
-            child: FractionallySizedBox(
-              widthFactor: 0.8, // Adjust width factor as needed
-              heightFactor: 0.4, // Adjust height factor as needed
-              child: Image.asset(
-                'assets/icons/Ashok.jpg', // Adjust the path to your image file
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
           // Curved Left Shadow
           Positioned(
             top: 0,
@@ -132,15 +121,31 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
             right: 0,
             child: CurvedRight(),
           ),
-          // Background Container
+          // Create New Election Text
+          Positioned(
+            top: 180, // Adjust the top position as needed
+            left: 70, // Adjust the left position as needed
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+              child: Text(
+                'Create New Election ',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 113, 113, 113),
+                ),
+              ),
+            ),
+          ),
+          // Main Container
           Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.fromLTRB(10, 50, 10, 0), // Adjust top padding as needed
               child: Container(
                 width: 350,
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8), // Adjust opacity as needed
+                  color: Colors.white.withOpacity(1), // Adjust opacity as needed
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -154,15 +159,7 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Create New Election',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 78, 184, 255),
-                      ),
-                    ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 20),
                     TextField(
                       controller: electionNameController,
                       decoration: InputDecoration(
@@ -173,16 +170,13 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
+                    TextButton(
                       onPressed: _isLoading ? null : _startElection,
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          EdgeInsets.symmetric(vertical: 15),
                         ),
-                        //primary: _isLoading ? Colors.grey : Color.fromARGB(255, 78, 184, 255), // Change button color based on loading state
-                        shadowColor: Color.fromARGB(255, 78, 184, 255), // Add shadow color
-                        elevation: 5, // Add elevation for depth effect
+                        foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                       ),
                       child: _isLoading
                           ? CircularProgressIndicator(
@@ -195,7 +189,6 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
                               ),
                             ),
                     ),

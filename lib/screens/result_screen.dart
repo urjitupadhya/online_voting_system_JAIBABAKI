@@ -10,17 +10,27 @@ class ResultScreen extends StatefulWidget {
   const ResultScreen({Key? key, required this.ethClient}) : super(key: key);
 
   @override
-  _ResultScreenState createState() => _ResultScreenState();
+  ResultScreenState createState() => ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class ResultScreenState extends State<ResultScreen> {
   final ConfettiController _confettiController = ConfettiController();
-  late AssetImage _backgroundImage; // Declare the AssetImage variable
+  late AssetImage _backgroundImage;
+  late Future<List> _candidatesNumFuture;
+  late Future<List<List<dynamic>>> _candidatesInfoFuture;
 
   @override
   void initState() {
     super.initState();
-    _backgroundImage = AssetImage('assets/images/ww.png'); // Load the background image
+    _backgroundImage = AssetImage('assets/images/ww.png');
+    _candidatesNumFuture = getCandidatesNum(widget.ethClient);
+    _candidatesInfoFuture = _candidatesNumFuture.then((candidatesNum) {
+      List<Future<List<dynamic>>> infoFutures = [];
+      for (int i = 0; i < candidatesNum[0].toInt(); i++) {
+        infoFutures.add(candidateInfo(i, widget.ethClient));
+      }
+      return Future.wait(infoFutures);
+    });
   }
 
   @override
@@ -39,83 +49,79 @@ class _ResultScreenState extends State<ResultScreen> {
       body: Stack(
         children: [
           // Background Image with Opacity
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: _backgroundImage, // Use the loaded background image
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Opacity(
-                opacity: 0.5, // Adjust the opacity as desired
-                child: Container(
-                  color: Colors.white, // Background color with opacity
-                ),
-              ),
+          Opacity(
+            opacity: 0.5, // Adjust the opacity as desired
+            child: Image.asset(
+              'assets/images/ww.png', // Image path for your background
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
           SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(14),
-              child: FutureBuilder<List>(
-                future: getCandidatesNum(widget.ethClient),
+              child: FutureBuilder<List<List<dynamic>>>(
+                future: _candidatesInfoFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                    //      CircularProgressIndicator(),
+                          SizedBox(height: 300),
+                          Text(
+                            'Fetching Candidates...', // Bold text
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error fetching candidates'),
                     );
                   } else {
-                    return Column(
-                      children: [
-                        for (int i = 0; i < snapshot.data![0].toInt(); i++)
-                          FutureBuilder<List>(
-                            future: candidateInfo(i, widget.ethClient),
-                            builder: (context, candidatesnapshot) {
-                              if (candidatesnapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else {
-                                var candidateData =
-                                    candidatesnapshot.data![0];
-                                return Card(
-                                  elevation: 4,
-                                  margin: EdgeInsets.symmetric(vertical: 8),
-                                  color: Colors.white.withOpacity(0.7), // Transparent with opacity
-                                  child: ListTile(
-                                    title: Text(
-                                      'Name: ${candidateData[0]}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Constituency: ${candidateData[6]}',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Party: ${candidateData[7]}',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Votes: ${candidateData[9]}',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
+                    List<Widget> candidateCards = [];
+                    for (int i = 0; i < snapshot.data!.length; i++) {
+                      var candidateData = snapshot.data![i][0];
+                      candidateCards.add(
+                        Card(
+                          elevation: 4,
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          color: Colors.white.withOpacity(0.7),
+                          child: ListTile(
+                            title: Text(
+                              'Name: ${candidateData[0]}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Constituency: ${candidateData[6]}',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  'Party: ${candidateData[7]}',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  'Votes: ${candidateData[9]}',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
                           ),
-                      ],
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: candidateCards,
                     );
                   }
                 },

@@ -3,12 +3,22 @@ import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/constants.dart';
 import 'package:online_voting_system/screens/election_creation_screen.dart';
+import 'package:online_voting_system/Information.dart'; // Import the InformationScreen
+import 'package:online_voting_system/screens/Election.dart'; // Import the ElectionScreen
+import 'package:online_voting_system/screens/AdminResult.dart'; // Import the AdminResultScreen
 
 void main() {
-  runApp(MaterialApp(
-    home: Home(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Home(),
+    );
+  }
 }
 
 class Home extends StatefulWidget {
@@ -44,8 +54,9 @@ class _HomeState extends State<Home> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 255, 255, 255)!,
-              const Color.fromARGB(255, 255, 255, 255)!,
+              const Color.fromARGB(255, 255, 223, 176)!, // Light orange
+              const Color.fromARGB(255, 255, 255, 255)!, // Light blue
+              const Color.fromARGB(255, 206, 255, 208)!, // Light green
             ],
           ),
         ),
@@ -67,7 +78,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> categories = ["Admin", "Elections", "Voters", "Elections Info"];
+  List<String> categories = ["Create Elections", "Voters Info", "Candidate Info", "Voters"];
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +86,16 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 0,vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                 ' Admin Dashboard',
-                style: TextStyle(color: const Color.fromARGB(255, 133, 133, 133), fontWeight: FontWeight.bold, fontSize: 25),
+                ' Admin Dashboard',
+                style: TextStyle(
+                    color: Color.fromRGBO(0, 0, 0, 1),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25),
               ),
               SizedBox(height: 10),
               Container(
@@ -89,7 +103,8 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
-                  itemBuilder: (context, index) => buildCategory(categories[index]),
+                  itemBuilder: (context, index) =>
+                      buildCategory(categories[index]),
                 ),
               ),
               SizedBox(height: 0),
@@ -100,38 +115,54 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(10),
           child: Text(
             'Manage Elections',
-            style: TextStyle(color: Colors.grey[700], fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Color.fromRGBO(0, 0, 0, 1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
-              itemBuilder: (context, index) => buildItem(context, categories[index]),
+              itemBuilder: (context, index) =>
+                  buildItem(context, categories[index]),
             ),
           ),
         ),
-        SizedBox(height:0),
+        SizedBox(height: 0),
       ],
     );
   }
 
   Widget buildCategory(String title) {
+    String displayTitle = title;
+    if (title == "Voters") {
+      displayTitle = "Result"; // Change the display title to "Result"
+    }
     return GestureDetector(
       onTap: () {
-        // Handle category selection if needed
+        if (title == "Voters Info") {
+          // Navigate to InformationScreen
+          Navigator.push(
+            context,
+            FadePageRoute(builder: (context) => InformationScreen()),
+          );
+        } else {
+          // Handle other categories if needed
+        }
       },
       child: Container(
         width: 150,
-        margin: EdgeInsets.only(right: 10,),
+        margin: EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 213, 212, 212),
+          color: Color.fromRGBO(0, 0, 0, 1),
           borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
-              color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.2),
+              color: Color.fromARGB(255, 134, 215, 255).withOpacity(0),
               spreadRadius: 0,
               blurRadius: 10,
               offset: Offset(0, 5),
@@ -140,9 +171,9 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Center(
           child: Text(
-            title,
+            displayTitle, // Use the display title
             style: TextStyle(
-              color: Colors.black,
+              color: const Color.fromARGB(255, 255, 255, 255),
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -153,19 +184,53 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildItem(BuildContext context, String title) {
+    String displayTitle = title;
+    if (title == "Voters") {
+      displayTitle = "Result"; // Change the display title to "Result"
+    }
+
+    String imagePath = '';
+    if (title == "Voters Info") {
+      imagePath = 'assets/images/aaq.png';
+    } else if (title == "Candidate Info") {
+      imagePath = 'assets/images/zs.png';
+    } else if (title == "Result") { // Change condition to "Result"
+      imagePath = 'assets/images/qq.png';
+    } else {
+      imagePath = 'assets/images/pp.png';
+    }
+
     return GestureDetector(
       onTap: () {
-        if (title == "Admin" && widget.ethClient != null) {
+        if (title == "Create Elections" && widget.ethClient != null) {
           // Navigate to ElectionCreationScreen with custom page transition
           Navigator.push(
             context,
-            PageRouteBuilder(
-              transitionDuration: Duration(milliseconds: 500),
-              pageBuilder: (context, animation, secondaryAnimation) => FadeTransition(
-                opacity: animation,
-                child: ElectionCreationScreen(ethClient: widget.ethClient!),
-              ),
+            FadePageRoute(
+              builder: (context) => ElectionCreationScreen(ethClient: widget.ethClient!),
             ),
+          );
+        } else if (title == "Candidate Info") {
+          // Navigate to Election.dart
+          Navigator.push(
+            context,
+            FadePageRoute(
+              builder: (context) => ElectionScreen(
+                  ethClient: widget.ethClient!,
+                  electionName: "Candidate Information"),
+            ),
+          );
+        } else if (title == "Voters Info") {
+          // Navigate to InformationScreen
+          Navigator.push(
+            context,
+            FadePageRoute(builder: (context) => InformationScreen()),
+          );
+        } else if (title == "Voters") { // Change condition to "Result"
+          // Navigate to AdminResult.dart
+          Navigator.push(
+            context,
+            FadePageRoute(builder: (context) => AdminResult(ethClient: widget.ethClient!)),
           );
         }
       },
@@ -179,36 +244,31 @@ class _HomePageState extends State<HomePage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 255, 255, 255),
-              Color.fromARGB(255, 157, 158, 159),
+              Color.fromRGBO(0, 0, 0, 1),
+              Color.fromRGBO(1, 1, 1, 1),
             ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(255, 101, 110, 120).withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 5,
-              offset: Offset(0, 5),
-            ),
-          ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround, // Space evenly between title and image
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              title,
+              displayTitle, // Use the display title
               style: TextStyle(
-                color: Colors.black,
+                color: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Expanded(
-              child: Container(
-                padding: EdgeInsets.only(bottom: 20), // Adjust padding to move the image up
-                child: Image.asset(
-                  'assets/images/pp.jpg',
-                  fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30), // Circular corners
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -217,4 +277,29 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class FadePageRoute<T> extends PageRouteBuilder<T> {
+  final WidgetBuilder builder;
+
+  FadePageRoute({required this.builder})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              builder(context),
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        );
 }

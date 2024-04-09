@@ -32,7 +32,7 @@ class _OngoingElectionScreenState extends State<OngoingElectionScreen> {
     setState(() {
       _loading = true;
     });
-    await Future.delayed(Duration(seconds: 1)); // Simulating fetching data
+    await Future.delayed(Duration(seconds: 0)); // Simulating fetching data
     setState(() {
       _loading = false;
     });
@@ -86,12 +86,13 @@ class _OngoingElectionScreenState extends State<OngoingElectionScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(),
+                    //      CircularProgressIndicator(),
                           SizedBox(height: 20),
-                          Text(
-                            'Fetching candidates...',
-                            style: TextStyle(fontSize: 18),
-                          ),
+                          // Text(
+                          //   'Fetching candidates...',
+                          //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
+                 
+                     //     ),
                         ],
                       ),
                     )
@@ -100,7 +101,9 @@ class _OngoingElectionScreenState extends State<OngoingElectionScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                           return Center(
+                            child: Text('Loading Candidates'),
+                          );
                         } else {
                           return ListView.builder(
                             itemCount: snapshot.data![0].toInt(),
@@ -111,7 +114,8 @@ class _OngoingElectionScreenState extends State<OngoingElectionScreen> {
                                   if (candidatesnapshot.connectionState ==
                                       ConnectionState.waiting) {
                                     return Center(
-                                        child: CircularProgressIndicator());
+                                        //child: // CircularProgressIndicator()
+                                        );
                                   } else {
                                     final color = const Color.fromARGB(255, 255, 255, 255).withOpacity(0.8); // Gray color with opacity
 
