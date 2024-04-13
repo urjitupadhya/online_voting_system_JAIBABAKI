@@ -1145,10 +1145,10 @@ packages:
     dependency: "direct main"
     description:
       name: web3dart
-      sha256: "31f93cf84b8c874d7ffb363959249d7e479115fe12cf46f30b037dcad6750b22"
+      sha256: "885e5e8f0cc3c87c09f160a7fce6279226ca41316806f7ece2001959c62ecced"
       url: "https://pub.dev"
     source: hosted
-    version: "2.7.2"
+    version: "2.7.3"
   web_socket_channel:
     dependency: "direct main"
     description:

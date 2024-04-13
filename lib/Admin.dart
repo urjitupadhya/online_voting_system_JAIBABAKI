@@ -24,8 +24,8 @@ class _AdminState extends State<Admin> {
     });
 
     // Credentials
-    final String validUsername = 'E';
-    final String validPassword = 'E';
+    final String validUsername = 'e';
+    final String validPassword = 'e';
 
     try {
       // Simulate admin login (replace this with actual admin login logic)

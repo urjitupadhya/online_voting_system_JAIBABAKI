@@ -5,8 +5,9 @@ import 'package:online_voting_system/screens/election_creation_screen.dart';
 import 'package:online_voting_system/screens/voting_screen.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/screens/ElectionInformationScree.dart';
-import 'package:online_voting_system/screens/Feedback.dart';
+import 'package:online_voting_system/screens/Hash.dart';
 import 'package:online_voting_system/screens/settings_screen.dart';
+import 'package:online_voting_system/screens/ElectionInformationScree.dart'; // Import the AdminResultScreen
 
 import 'package:online_voting_system/constants.dart';
 import 'package:online_voting_system/screens/voter_registration_screen.dart';
@@ -120,10 +121,7 @@ class _HomesContentState extends State<HomesContent> {
     Widget? destinationScreen; // Define variable to hold the destination screen
 
     if (categoryName == 'Voting') {
-      destinationScreen = VoterRegistrationScreen(
-        ethClient: ethClient!,
-        electionName: 'LOK SABHA',
-      );
+      destinationScreen = ElectionInformationScreen();
     } else if (categoryName == 'Result') {
       destinationScreen = ResultScreen(ethClient: ethClient!);
     }
@@ -223,8 +221,8 @@ class CustomAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CircleIconButton(
-                icon: Icons.search,
-                label: 'Information',
+                icon: Icons.poll,
+                label: 'Ongoing  Elections',
                 onPressed: () {
                   // Handle the click for book finder
                   Navigator.push(
@@ -235,6 +233,24 @@ class CustomAppBar extends StatelessWidget {
                   );
                 },
               ),
+
+
+
+                            CircleIconButton(
+                icon: Icons.article,
+                label: 'UserSection ',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HashScreen(),
+                    ),
+                  );
+                },
+              ),
+
+
+              
               CircleIconButton(
                 icon: Icons.view_list,
                 label: 'Contact Us',
@@ -248,18 +264,7 @@ class CustomAppBar extends StatelessWidget {
                   );
                 },
               ),
-              CircleIconButton(
-                icon: Icons.article,
-                label: 'Feedback',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FeedbackScreen(),
-                    ),
-                  );
-                },
-              ),
+
             ],
           ),
         ],
@@ -366,6 +371,7 @@ class CircleIconButton extends StatelessWidget {
     );
   }
 }
+
 class CategoryCard extends StatelessWidget {
   final Category category;
   final VoidCallback onTap;
@@ -415,7 +421,8 @@ class CategoryCard extends StatelessWidget {
               right: 0,
               bottom: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 color: Colors.black.withOpacity(0.5),
                 child: Text(
                   category.name,

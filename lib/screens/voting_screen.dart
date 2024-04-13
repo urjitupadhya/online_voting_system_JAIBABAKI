@@ -19,6 +19,7 @@ class VotingScreen extends StatefulWidget {
 
 class _VotingScreenState extends State<VotingScreen> {
   bool _loading = true;
+  bool _voted = false; // State to track if the user has already voted
 
   @override
   void initState() {
@@ -58,6 +59,26 @@ class _VotingScreenState extends State<VotingScreen> {
         ),
         backgroundColor: Colors.green,
       ),
+    );
+  }
+
+  void _showAlreadyVotedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Already Voted"),
+          content: Text("You have already voted in this election."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -113,9 +134,16 @@ class _VotingScreenState extends State<VotingScreen> {
                 ),
                 SizedBox(width: 16), // Add spacing between text and button
                 ElevatedButton(
-                  onPressed: () async {
+                  onPressed: _voted ? null : () async { // Disable button if already voted
+                    if (_voted) {
+                      _showAlreadyVotedDialog(context);
+                      return;
+                    }
                     try {
                       await vote(index, widget.ethClient);
+                      setState(() {
+                        _voted = true; // Set voted state to true
+                      });
                       _refreshCandidates();
                       _showVoteCountSnackbar(context);
                     } catch (error) {

@@ -23,7 +23,7 @@ dependencies:
   get_it: ^7.6.7
   glassmorphism: ^3.0.0
   glassmorphism_ui: ^0.3.0
-  web3dart: ^2.7.2
+  web3dart: ^2.7.3
   cloud_firestore: ^4.15.5
   web_socket_channel: ^2.4.0
   webview_flutter: ^4.5.0
@@ -76,7 +76,10 @@ flutter:
     - assets/images/q.png
     - assets/icons/i.png
     - assets/images/r.jpg
-
+    - assets/images/ur.png
+    - assets/images/a.png
+    - assets/images/uu.png
+    - assets/images/urr.png
 
 
   fonts:

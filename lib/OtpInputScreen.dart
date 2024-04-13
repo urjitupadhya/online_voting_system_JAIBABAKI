@@ -5,6 +5,7 @@ import 'package:online_voting_system/components/curved-left-shadow.dart';
 import 'package:online_voting_system/components/curved-left.dart';
 import 'package:online_voting_system/components/curved-right-shadow.dart';
 import 'package:online_voting_system/components/curved-right.dart';
+import 'package:online_voting_system/Login.dart';
 
 class OtpInputScreen extends StatefulWidget {
   final String verificationId;
@@ -31,21 +32,25 @@ class _OtpInputScreenState extends State<OtpInputScreen> {
         smsCode: _otpController.text.trim(),
       );
 
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
 
       // After successful OTP verification, navigate to the new home screen
       if (userCredential.user != null) {
         // Use PageRouteBuilder for custom transition animation
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
-            transitionDuration: Duration(milliseconds: 500), // Adjust the duration as needed
-            pageBuilder: (context, animation, secondaryAnimation) => Homes(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            transitionDuration:
+                Duration(milliseconds: 500), // Adjust the duration as needed
+            pageBuilder: (context, animation, secondaryAnimation) => Login(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
               const curve = Curves.ease;
 
-              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
               var offsetAnimation = animation.drive(tween);
 
               return SlideTransition(
@@ -59,7 +64,8 @@ class _OtpInputScreenState extends State<OtpInputScreen> {
     } catch (e) {
       print('Error verifying OTP: $e');
       // Handle verification failure
-      _showErrorSnackbar(context, 'The verification code is invalid. Please check and try again.');
+      _showErrorSnackbar(context,
+          'The verification code is invalid. Please check and try again.');
     } finally {
       setState(() {
         _isLoading = false;
@@ -79,14 +85,18 @@ class _OtpInputScreenState extends State<OtpInputScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Set to false to keep the screen static when the keyboard appears
+      resizeToAvoidBottomInset:
+          false, // Set to false to keep the screen static when the keyboard appears
       body: Stack(
         children: [
           Positioned(top: 0, left: 0, child: CurvedLeftShadow()),
-          Positioned(top: 0, left: 0, child: CurvedLeft(
-            saffronColor1: const Color.fromARGB(255, 255, 211, 145),
-            saffronColor2: const Color.fromARGB(255, 253, 186, 165),
-          )),
+          Positioned(
+              top: 0,
+              left: 0,
+              child: CurvedLeft(
+                saffronColor1: const Color.fromARGB(255, 255, 211, 145),
+                saffronColor2: const Color.fromARGB(255, 253, 186, 165),
+              )),
           Positioned(bottom: 0, left: 0, child: CurvedRightShadow()),
           Positioned(bottom: 0, left: 0, child: CurvedRight()),
           Center(
@@ -100,7 +110,8 @@ class _OtpInputScreenState extends State<OtpInputScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 139, 196, 243), // Saffron color
+                      color: const Color.fromARGB(
+                          255, 139, 196, 243), // Saffron color
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -130,8 +141,8 @@ class _OtpInputScreenState extends State<OtpInputScreen> {
                           hintText: "Enter OTP",
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 20),
                         ),
                       ),
                     ),

@@ -1,142 +1,84 @@
 import 'package:flutter/material.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+String voter_private_key = '';
+String hash_number = '';
+
+void getPrivateKeys() async {
+  try {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // Reference to the current user's node in the database
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users').child(user.uid);
+
+      // Fetch the user's data once
+      DataSnapshot snapshot =
+          await userRef.once().then((snapshot) => snapshot.snapshot);
+
+      // Extract the private key and hash number from the snapshot
+      Map<dynamic, dynamic>? userData =
+          snapshot.value as Map<dynamic, dynamic>?;
+
+      if (userData != null) {
+        String? privateKey = userData['privateKey'];
+        String? hashNumber = userData['hashNumber']; // Add this line
+
+        if (privateKey != null && privateKey.isNotEmpty) {
+          // Assign the private key and hash number to the global variables
+          voter_private_key = privateKey;
+          hash_number = hashNumber ?? ''; // Assign hash number or empty string if null
+          print('Private key obtained successfully: $voter_private_key');
+          print('Hash number obtained successfully: $hash_number');
+        } else {
+          print('Private key not found for the current user.');
+        }
+      } else {
+        print(
+            'No data available for the current user or data format is incorrect.');
+      }
+    } else {
+      print('User is not logged in.');
+    }
+  } catch (e) {
+    print('Error fetching private key: $e');
+  }
+}
+
+void main() {
+  // Call the function to get the private key
+  getPrivateKeys();
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Your App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ContactUsScreen(),
+    );
+  }
+}
 
 class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Call the function to get the private key
+    getPrivateKeys();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Contact Us'),
       ),
-      body: ContactUsForm(),
+      //   body: ContactUsForm(),
     );
-  }
-}
-
-class ContactUsForm extends StatefulWidget {
-  @override
-  _ContactUsFormState createState() => _ContactUsFormState();
-}
-
-class _ContactUsFormState extends State<ContactUsForm> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _messageController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Contact Us',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 20.0),
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              labelText: 'Your Name',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 10.0),
-          TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              labelText: 'Your Email',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 10.0),
-          TextField(
-            controller: _messageController,
-            maxLines: 5,
-            decoration: InputDecoration(
-              labelText: 'Message',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              _sendEmail(context);
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _sendEmail(BuildContext context) async {
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String message = _messageController.text;
-
-    final smtpServer = gmail('urjitupadhyayuu@gmail.com', '123456');
-
-    final messageToSend = Message()
-      ..from = Address(email, name)
-      ..recipients.add('systemonIinevoting869@gmail.com') // Replace with your business email
-      ..subject = 'Query from $name'
-      ..text = message;
-
-    try {
-      final sendReport = await send(messageToSend, smtpServer);
-      print('Message sent: ${sendReport.toString()}');
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Form Submitted'),
-            content: Text('Thank you for contacting us! We will get back to you soon.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-
-      _clearFormFields();
-    } catch (e) {
-      print('Error occurred while sending email: $e');
-      // Handle error scenario, e.g., show error dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('An error occurred. Please try again later.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  void _clearFormFields() {
-    _nameController.clear();
-    _emailController.clear();
-    _messageController.clear();
   }
 }
