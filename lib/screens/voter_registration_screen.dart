@@ -3,9 +3,11 @@ import 'package:online_voting_system/components/curved-left-shadow.dart';
 import 'package:online_voting_system/components/curved-left.dart';
 import 'package:online_voting_system/components/curved-right-shadow.dart';
 import 'package:online_voting_system/components/curved-right.dart';
+import 'package:online_voting_system/screens/Hash.dart';
 import 'package:online_voting_system/services/functions.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/screens/voting_screen.dart';
+import 'package:online_voting_system/screens/Hash.dart'; // Import HashScreen.dart
 
 class VoterRegistrationScreen extends StatefulWidget {
   final Web3Client ethClient;
@@ -54,6 +56,7 @@ class _VoterRegistrationScreenState extends State<VoterRegistrationScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(228, 145, 187, 255),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -85,53 +88,108 @@ class _VoterRegistrationScreenState extends State<VoterRegistrationScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            String voterAddress =
-                                voterAddressController.text.trim();
-                            if (voterAddress.isNotEmpty) {
-                              try {
-                                // Authorize the voter using the provided voter address
-                                await authorizeVoter(
-                                  voterAddress,
-                                  widget.ethClient,
-                                );
-                                _showSuccessSnackBar(context);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => VotingScreen(
-                                      ethClient: widget.ethClient,
-                                      electionName: widget.electionName,
-                                    ),
-                                  ),
-                                );
-                              } catch (e) {
-                                print('Error authorizing voter: $e');
-                                _showErrorSnackbar(
-                                    context,
-                                    'Failed to authorize voter. '
-                                    'Please try again.');
-                              }
-                            }
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                    child: _isLoading
-                        ? CircularProgressIndicator()
-                        : Text('Authorize Voter'),
+                  _isLoading
+                      ? CircularProgressIndicator()
+                      : Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 178, 217, 249),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 245, 245, 245),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () async {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    String voterAddress =
+                                        voterAddressController.text.trim();
+                                    if (voterAddress.isNotEmpty) {
+                                      try {
+                                        // Authorize the voter using the provided voter address
+                                        await authorizeVoter(
+                                          voterAddress,
+                                          widget.ethClient,
+                                        );
+                                        _showSuccessSnackBar(context);
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => VotingScreen(
+                                              ethClient: widget.ethClient,
+                                              electionName: widget.electionName,
+                                            ),
+                                          ),
+                                        );
+                                      } catch (e) {
+                                        print('Error authorizing voter: $e');
+                                        _showErrorSnackbar(
+                                            context,
+                                            'Failed to authorize voter. '
+                                            'Please try again.');
+                                      } finally {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    }
+                                  },
+                            icon: Icon(Icons.arrow_forward),
+                            iconSize: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {
+                      _navigateToHashScreen(context);
+                    },
+                    child: Text(
+                      'Get Your Voter ID',
+                      style: TextStyle(
+                        color: Color.fromARGB(228, 145, 187, 255),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _navigateToHashScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 500),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.easeInOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return HashScreen();
+        },
       ),
     );
   }

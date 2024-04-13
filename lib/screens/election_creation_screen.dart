@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:online_voting_system/screens/OngoingElectionScreen.dart';
 import 'package:online_voting_system/services/functions.dart';
@@ -18,14 +19,27 @@ class ElectionCreationScreen extends StatefulWidget {
 
 class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
   TextEditingController electionNameController = TextEditingController();
+  TextEditingController startDateController = TextEditingController();
+  TextEditingController endDateController = TextEditingController();
   bool _isLoading = false;
+
+  // Firebase Realtime Database reference
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   Future<void> _startElection() async {
     try {
-      if (electionNameController.text.isNotEmpty) {
+      if (electionNameController.text.isNotEmpty &&
+          startDateController.text.isNotEmpty &&
+          endDateController.text.isNotEmpty) {
         setState(() {
           _isLoading = true;
         });
+        // Save election details to Firebase Realtime Database
+        await _saveElectionDetails(
+          electionNameController.text,
+          startDateController.text,
+          endDateController.text,
+        );
         await startElection(
           electionNameController.text,
           widget.ethClient,
@@ -33,57 +47,91 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
         setState(() {
           _isLoading = false;
         });
-        // Show popup message
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: Text('Election created successfully.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                    // Navigate to the next screen
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OngoingElectionScreen(
-                          ethClient: widget.ethClient,
-                          electionName: electionNameController.text,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        // Show success message
+        _showSuccessDialog();
       }
     } catch (error) {
       // Handle errors
-      print('Error: $error');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to start election: $error'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _showErrorDialog(error.toString());
       setState(() {
         _isLoading = false;
+      });
+    }
+  }
+
+  // Method to save election details to Firebase Realtime Database
+  Future<void> _saveElectionDetails(String name, String startDate, String endDate) async {
+    await _database.reference().child('elections').push().set({
+      'name': name,
+      'startDate': startDate,
+      'endDate': endDate,
+      'isOpen': true, // Set the election as open when started
+    });
+  }
+
+  // Method to show success dialog
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Election created successfully.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                // Navigate to the next screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OngoingElectionScreen(
+                      ethClient: widget.ethClient,
+                      electionName: electionNameController.text,
+                    ),
+                  ),
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to show error dialog
+  void _showErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to start election: $errorMessage'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to show date picker
+  Future<void> _selectDate(TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = picked.toIso8601String().substring(0, 10); // Format: YYYY-MM-DD
       });
     }
   }
@@ -123,8 +171,8 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
           ),
           // Create New Election Text
           Positioned(
-            top: 180, // Adjust the top position as needed
-            left: 70, // Adjust the left position as needed
+            top: 100, // Adjust the top position as needed
+            left: 80, // Adjust the left position as needed
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
               child: Text(
@@ -140,10 +188,10 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
           // Main Container
           Center(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 50, 10, 0), // Adjust top padding as needed
+              padding: EdgeInsets.fromLTRB(10, 70, 10, 0), // Adjust top padding as needed
               child: Container(
                 width: 350,
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(1), // Adjust opacity as needed
                   borderRadius: BorderRadius.circular(20),
@@ -164,6 +212,30 @@ class _ElectionCreationScreenState extends State<ElectionCreationScreen> {
                       controller: electionNameController,
                       decoration: InputDecoration(
                         labelText: 'Election Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: startDateController,
+                      readOnly: true,
+                      onTap: () => _selectDate(startDateController),
+                      decoration: InputDecoration(
+                        labelText: 'Start Date',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: endDateController,
+                      readOnly: true,
+                      onTap: () => _selectDate(endDateController),
+                      decoration: InputDecoration(
+                        labelText: 'End Date',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
